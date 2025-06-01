@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:viewModels="clr-namespace:TodoApp.ViewModel"
+                    xmlns:views="clr-namespace:TodoApp.View">
+
+    <DataTemplate DataType="{x:Type viewModels:TasksViewModel}">
+        <views:TaskView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:SettingsViewModel}">
+        <views:SettingsView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
+        <views:HomeView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:HistoryViewModel}">
+        <views:HistoryView />
+    </DataTemplate>
+
+</ResourceDictionary>

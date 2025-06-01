@@ -1,0 +1,156 @@
+﻿<UserControl x:Class="TodoApp.Controls.TitleBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converter="clr-namespace:TodoApp.Helper"
+             xmlns:local="clr-namespace:TodoApp.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="50"
+             d:DesignWidth="800"
+             Height="40"
+             ClipToBounds="True">
+
+    <!-- Converter Für die Button Sichtbarkeit-->
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converter:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInverterConverter" />
+    </UserControl.Resources>
+    <!--<Border>-->
+    <Border HorizontalAlignment="Stretch"
+            Background="{Binding BorderBackground,RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Style="{Binding BorderStyle, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            CornerRadius="{Binding BorderCornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}">
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <!-- Icon -->
+                <ColumnDefinition Width="Auto" />
+                <!-- Title -->
+                <ColumnDefinition Width="*" />
+                <!-- Minimieren -->
+                <ColumnDefinition Width="Auto" />
+                <!-- Maximieren -->
+                <ColumnDefinition Width="Auto" />
+                <!-- Schließen -->
+                <ColumnDefinition Width="Auto" />
+
+            </Grid.ColumnDefinitions>
+
+
+            <!-- Icon -->
+            <Image Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   Style="{Binding IconStyle, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   Width="24"
+                   Height="24"
+                   Margin="10 0 5 0"
+                   VerticalAlignment="Center"
+                   Grid.Column="0" />
+
+            <!-- Titel -->
+            <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       Style="{Binding TitleStyle, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       Foreground="{Binding TitleForeground, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       HorizontalAlignment="{Binding TitleHorizontalAligment, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       VerticalAlignment="Center"
+                       FontSize="{Binding TitleFontsize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       Grid.Column="1" />
+
+            <!-- Minimieren -->
+            <Button Width="30"
+                    Height="30"
+                    Grid.Column="2"
+                    Cursor="Hand"
+                    Margin="0 0 5 0"
+                    Background="{Binding ButtonBackground, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Style="{Binding ButtonStyle, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Command="{Binding MinimizeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    ToolTip="Fenster verkleinern"
+                    Visibility="{Binding ShowMinimizeButton, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                <Grid>
+                    <!-- Icon anzeigen, wenn UseIcons = true -->
+                    <Image Source="{Binding MinimizeIconSource}"
+                           Width="18"
+                           Height="18"
+                           Visibility="{Binding UseMinimizeIcon, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}" />
+
+                    <!-- Text anzeigen, wenn UseIcons = false -->
+                    <TextBlock Text="–"
+                               FontSize="16"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Visibility="{Binding UseMinimizeIcon, Converter={StaticResource BoolToVisibilityConverter}}" />
+                </Grid>
+
+            </Button>
+
+            <!-- Maximieren -->
+            <Button Width="30"
+                    Height="30"
+                    Grid.Column="3"
+                    VerticalAlignment="Center"
+                    Margin="0 0 5 0"
+                    Cursor="Hand"
+                    Background="{Binding ButtonBackground, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Style="{Binding MaximizeButtonStyle, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Command="{Binding MaximizeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    ToolTip="Fenster vergrößern"
+                    Visibility="{Binding ShowMaximizeButton, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                <Grid>
+                    <!-- Icon anzeigen, wenn UseIcons = true -->
+                    <Image Source="{Binding MaximizeIconSource}"
+                           Width="18"
+                           Height="18"
+                           Visibility="{Binding UseMaximizeIcon, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}" />
+
+                    <!-- Text anzeigen, wenn UseIcons = false -->
+                    <TextBlock Text="▢"
+                               FontSize="16"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Visibility="{Binding UseMaximizeIcon, Converter={StaticResource BoolToVisibilityConverter}}" />
+                </Grid>
+            </Button>
+
+            <!-- Schließen -->
+            <Button Width="30"
+                    Height="30"
+                    Grid.Column="4"
+                    Margin="0 0 10 0"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    Background="{Binding ButtonBackground, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Style="{Binding CloseButtonStyle, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Command="{Binding CloseButtonCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    ToolTip="Fenster schlißen"
+                    BorderBrush="{Binding CloseBorderBrush, RelativeSource={RelativeSource AncestorType=UserControl}}">
+
+                <Grid>
+                    <!-- Icon anzeigen, wenn UseIcons = true -->
+                    <Image Source="{Binding CloseIconSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                           Width="18"
+                           Height="18"
+                           Visibility="{Binding UseCloseIcon, Converter={StaticResource BoolToVisibilityConverter}}"
+                            />
+
+                    <!-- Text anzeigen, wenn UseIcons = false -->
+                    <TextBlock Text="X"
+                               FontSize="16"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Visibility="{Binding UseCloseIcon,RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityInverterConverter}}" />
+                </Grid>
+
+            </Button>
+
+        </Grid>
+        <!--</Border>-->
+    </Border>
+
+</UserControl>

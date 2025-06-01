@@ -1,0 +1,112 @@
+﻿<Window x:Class="TodoApp.View.AddTaskView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:TodoApp.Controls"
+        xmlns:local="clr-namespace:TodoApp.View"
+        mc:Ignorable="d"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="Transparent"
+        Height="200"
+        Width="300"
+        WindowStartupLocation="CenterOwner">
+
+    <Border MouseLeftButtonDown="Border_MouseLeftButtonDown"
+            ClipToBounds="True"
+            CornerRadius="10"
+            Background="{StaticResource DialogBackroudnGradient}">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <controls:TitleBar  Grid.Row="0"
+                                BorderThickness="0"
+                                BorderCornerRadius="10 10 0 0"
+                                BorderBackground="#FF115F36"
+                                Icon="/Assets/myIcon.ico"
+                                CloseButtonCommand="{Binding CancelCommand}"
+                                ShowMaximizeButton="False"
+                                ShowMinimizeButton="False"
+                                Title="Neue Aufgabe hinzufügen"
+                                VerticalAlignment="Top"
+                                TitleForeground="LightGreen" 
+                                CloseIconSource="/Assets/Icon/Icon-close.png"
+                                UseCloseIcon="True"/>
+
+            <Grid Margin="10"
+                  Grid.Row="1">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0">
+
+                    <TextBlock  Text="Aufgabe"
+                                Foreground="YellowGreen"
+                                HorizontalAlignment="Center" />
+                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                             Width="250" />
+                </StackPanel>
+                <StackPanel Grid.Row="1">
+
+                    <TextBlock Text="Beschreibung"
+                               Foreground="YellowGreen"
+                               Margin="0 10 0 0"
+                               HorizontalAlignment="Center" />
+                    <TextBox Width="250"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             MaxLines="4"
+                             Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                             VerticalScrollBarVisibility="Auto" />
+                </StackPanel>
+
+                <Grid Grid.Row="3"
+                      Margin="10 0 10 0"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Center">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border CornerRadius="10"
+                            Grid.Column="0"
+                            Background="#FF115F36"
+                            BorderThickness="0">
+
+                        <Button Content="Hinzufügen"
+                                Width="100"
+                                Background="Transparent"
+                                Command="{Binding ConfirmCommand}"
+                                BorderThickness="0" />
+                    </Border>
+                    <Border CornerRadius="10"
+                            Grid.Column="1"
+                            Background="#FF116D3D"
+                            BorderThickness="0"
+                            Margin="10 0 0 0 ">
+
+                        <Button Content="Abbrechen"
+                                Width="100"
+                                Command="{Binding CancelCommand}"
+                                Background="Transparent"
+                                BorderThickness="0" />
+                    </Border>
+                </Grid>
+            </Grid>
+
+        </Grid>
+    </Border>
+</Window>

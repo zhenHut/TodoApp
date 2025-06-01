@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Icon\floppy-disk.png" />
+    <None Remove="Assets\Icon\Icon-ADD2.png" />
+    <None Remove="Assets\Icon\Icon-addTask.png" />
+    <None Remove="Assets\Icon\Icon-close.png" />
+    <None Remove="Assets\Icon\Icon-History.png" />
+    <None Remove="Assets\Icon\Icon-Home.png" />
+    <None Remove="Assets\Icon\Icon-reload.png" />
+    <None Remove="Assets\Icon\Icon-save.png" />
+    <None Remove="Assets\Icon\Icon-settings.png" />
+    <None Remove="Assets\Icon\Icon-Tasks.png" />
+    <None Remove="Assets\Icon\IconAdd.png" />
+    <None Remove="Assets\Icon\IconAktentasche.png" />
+    <None Remove="Assets\Icon\IconDokument.png" />
+    <None Remove="Assets\Icon\IconGeprüft-aktiviert.png" />
+    <None Remove="Assets\Icon\IconGeprüft.png" />
+    <None Remove="Assets\Icon\IconLöschen.png" />
+    <None Remove="Assets\Icon\IconMüll.png" />
+    <None Remove="Assets\Icon\IconPlus.png" />
+    <None Remove="Assets\Icon\IconsAktualisieren.png" />
+    <None Remove="Assets\Icon\IconsEinstellungen.png" />
+    <None Remove="Assets\Icon\IconStornieren.png" />
+    <None Remove="Assets\Icon\Icons_Synchronisieren.png" />
+    <None Remove="Assets\Icon\logoicon.ico" />
+    <None Remove="Assets\myIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Icon\Icon-close.png" />
+    <Resource Include="Assets\Icon\Icon-History.png" />
+    <Resource Include="Assets\Icon\Icon-Home.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Icon\floppy-disk.png" />
+    <Resource Include="Assets\Icon\Icon-Add2.png" />
+    <Resource Include="Assets\Icon\Icon-addTask.png" />
+    <Resource Include="Assets\Icon\Icon-reload.png" />
+    <Resource Include="Assets\Icon\Icon-save.png" />
+    <Resource Include="Assets\Icon\Icon-settings.png" />
+    <Resource Include="Assets\Icon\Icon-Tasks.png" />
+    <Resource Include="Assets\Icon\IconAdd.png" />
+    <Resource Include="Assets\Icon\IconAktentasche.png" />
+    <Resource Include="Assets\Icon\IconDokument.png" />
+    <Resource Include="Assets\Icon\IconGeprüft-aktiviert.png" />
+    <Resource Include="Assets\Icon\IconGeprüft.png" />
+    <Resource Include="Assets\Icon\IconLöschen.png" />
+    <Resource Include="Assets\Icon\IconMüll.png" />
+    <Resource Include="Assets\Icon\IconPlus.png" />
+    <Resource Include="Assets\Icon\IconsAktualisieren.png" />
+    <Resource Include="Assets\Icon\IconsEinstellungen.png" />
+    <Resource Include="Assets\Icon\IconStornieren.png" />
+    <Resource Include="Assets\Icon\Icons_Synchronisieren.png" />
+    <Resource Include="Assets\logoicon.ico" />
+    <Resource Include="Assets\myIcon.ico" />
+  </ItemGroup>
+
+</Project>
