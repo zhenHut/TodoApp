@@ -30,18 +30,11 @@ namespace TodoApp.View
 
         #region Fields
 
-
-
         #endregion
 
         #region Methods
 
 
         #endregion
-
-        private void TaskView_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

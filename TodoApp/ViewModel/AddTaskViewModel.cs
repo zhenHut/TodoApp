@@ -4,6 +4,7 @@ using TodoApp.Helper;
 using TodoApp.Infrastructure;
 using TodoApp.Interfaces;
 using TodoApp.Model;
+using TodoApp.Services;
 
 namespace TodoApp.ViewModel
 {
@@ -13,10 +14,9 @@ namespace TodoApp.ViewModel
 
         public AddTaskViewModel()
         {
-
+            _notificationService = ServiceLocator.GET<INotificationService>();
             ConfirmCommand = new RelayCommand(Confirm_Execute, Confirm_CanExecute);
             CancelCommand = new RelayCommand(Cancel_Execute);
-
         }
 
         #endregion
@@ -25,14 +25,15 @@ namespace TodoApp.ViewModel
 
         private string _title = string.Empty;
         private string _description = string.Empty;
-        private INotificationService? _notificationService;
+        private DateTime? _dueDate;
+        private bool _isTaskUpdated;
+        private TaskItem? _task;
 
+        private INotificationService? _notificationService;
+        private TasksViewModel? _tasksViewModel;
         #endregion
 
         #region Properties
-
-        private TasksViewModel? _tasksViewModel;
-
 
         public string Title
         {
@@ -43,9 +44,20 @@ namespace TodoApp.ViewModel
         public string Description
         {
             get => _description;
-            set { SetProperty(ref _description, value); }
+            set => SetProperty(ref _description, value);
         }
 
+        public DateTime? DueDate
+        {
+            get => _dueDate;
+            set => SetProperty(ref _dueDate, value);
+        }
+
+        public bool IsTaskUpdated
+        {
+            get => _isTaskUpdated;
+            set => SetProperty(ref _isTaskUpdated, value);
+        }
         #endregion
 
         #region Commands
@@ -61,33 +73,54 @@ namespace TodoApp.ViewModel
 
         #region Methods
 
-        public void Init(TasksViewModel? TasksViewModel, INotificationService? notificationService)
+        public void Init(TasksViewModel? TasksViewModel , TaskItem? taskItem, bool isTaskUpdated = false)
         {
             _tasksViewModel = TasksViewModel;
-            _notificationService = notificationService;
+            
+            _isTaskUpdated = isTaskUpdated;
+
+            if (IsTaskUpdated && _task != null)
+            {
+                _task = taskItem;
+                _title = taskItem?.Title ?? string.Empty;
+                _description = taskItem?.Description ?? string.Empty;
+                _dueDate = taskItem?.DueDate;
+            }
+           
         }
 
-
-
-        public bool Confirm_CanExecute()
+        private bool Confirm_CanExecute()
         {
-            return !string.IsNullOrWhiteSpace(Title);
+            return !string.IsNullOrWhiteSpace(_task?.Title);
         }
 
         private void Confirm_Execute()
         {
-
-            var newTask = new TaskItem { Title = Title, Description = Description };
-
-            if (_tasksViewModel?.Tasks.Any(t => t.Title.Equals(newTask.Title, StringComparison.OrdinalIgnoreCase))?? false)
+            if (!_isTaskUpdated && _task != null)
             {
-                _notificationService?.Show("Aufgabe existiert bereits.", MessagePanelType.Error);
-                return;
+                _task.Title = _title;
+                _task.Description = _description;
+                _task.DueDate = _dueDate;
+            }else
+            { 
+                var newTask = new TaskItem
+                {
+                    Title = Title,
+                    Description = Description,
+                    DueDate = DueDate,
+                };
+                
+
+                if (_tasksViewModel?.Tasks.Any(t => t.Title.Equals(newTask?.Title, StringComparison.OrdinalIgnoreCase)) ?? false)
+                {
+                    _notificationService?.Show("Aufgabe existiert bereits.", MessagePanelType.Error);
+                    return;
+                }
+
+                _tasksViewModel?.AddTask(newTask?? new TaskItem()) ;
             }
-
-            _tasksViewModel?.AddTask(newTask);
-            RequestClose?.Invoke();
-
+            
+                RequestClose?.Invoke();
         }
 
         private void Cancel_Execute()

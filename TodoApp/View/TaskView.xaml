@@ -11,6 +11,59 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+
+        <Style x:Key="FlatToolbarButtonStyle"
+               TargetType="Button">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Focusable"
+                    Value="False" />
+            <Setter Property="Padding"
+                    Value="5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="Transparent"
+                                CornerRadius="4">
+                            <StackPanel Orientation="Vertical"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover -->
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#2211FF99" />
+                            </Trigger>
+
+                            <!-- Pressed (optional) -->
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#4411FF99" />
+                            </Trigger>
+
+                            <!-- Disabled -->
+                            <Trigger Property="IsEnabled"
+                                     Value="False">
+                                <Setter TargetName="border"
+                                        Property="Opacity"
+                                        Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="10 5">
@@ -40,12 +93,40 @@
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         Margin="0">
+                <!-- Update Button -->
+                <Button Style="{StaticResource FlatToolbarButtonStyle}"
+                        Command="{Binding UpdateTaskCommand}"
+                        ToolTip="Aufgabe bearbeiten.">
+
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="/Assets/Icon/Icon-edit.png"
+                               Width="40"
+                               Height="40" />
+                        <TextBlock Text="Bearbeiten"
+                                   Foreground="YellowGreen" />
+                    </StackPanel>
+                </Button>
+
+                <!-- Seperator -->
+                <Border Width="1"
+                        Height="40"
+                        Margin="15 0"
+                        VerticalAlignment="Center">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0"
+                                             EndPoint="0,1">
+                            <GradientStop Color="#66FFFFFF"
+                                          Offset="0.0" />
+                            <GradientStop Color="#22FFFFFF"
+                                          Offset="0.5" />
+                            <GradientStop Color="#66FFFFFF"
+                                          Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
 
                 <!-- Load Button -->
-                <Button Width="Auto"
-                        Height="Auto"
-                        Background="Transparent"
-                        BorderThickness="0"
+                <Button Style="{StaticResource FlatToolbarButtonStyle}"
                         Command="{Binding LoadTaskCommand}"
                         ToolTip="Aufgaben Laden.">
 
@@ -58,6 +139,7 @@
                     </StackPanel>
                 </Button>
 
+                <!-- Seperator -->
                 <Border Width="1"
                         Height="40"
                         Background="{StaticResource SeparatorBrush}"
@@ -67,10 +149,7 @@
 
 
                 <!-- Save Button -->
-                <Button Width="Auto"
-                        Height="Auto"
-                        Background="Transparent"
-                        BorderThickness="0"
+                <Button Style="{StaticResource FlatToolbarButtonStyle}"
                         Command="{Binding SaveTaskCommand}"
                         ToolTip="Aufgaben speichern.">
 
@@ -102,11 +181,7 @@
                 </Border>
 
                 <!-- AddTask Button -->
-                <Button Width="Auto"
-                        Height="Auto"
-                        HorizontalAlignment="Right"
-                        Background="Transparent"
-                        BorderThickness="0"
+                <Button Style="{StaticResource FlatToolbarButtonStyle}"
                         Command="{Binding OpenAddTaskCommand}"
                         ToolTip="öffnet Dialog um Aufgabe hinzu zufügen.">
 
@@ -132,6 +207,7 @@
               Margin="0 10 0 0">
 
             <ListBox ItemsSource="{Binding Tasks}"
+                     SelectedItem="{Binding SelectedTaskItem, Mode=TwoWay}"
                      Background="Transparent"
                      HorizontalContentAlignment="Stretch">
                 <ListBox.ItemTemplate>
@@ -142,6 +218,7 @@
                                 <ColumnDefinition Width="Auto"
                                                   MinWidth="50" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
@@ -218,9 +295,15 @@
                                        Grid.Column="1"
                                        HorizontalAlignment="Left" />
 
+
+                            <TextBlock Grid.Column="3"
+                                       Margin="0 0 10 0"
+                                       Text="{Binding DueDate, StringFormat='Fällig bis {0:dd.MM.yyyy}',TargetNullValue=''}"
+                                       Foreground="DarkOrange" />
+
                             <!-- Delete Button -->
 
-                            <Button Grid.Column="3"
+                            <Button Grid.Column="4"
                                     Width="32"
                                     Height="32"
                                     HorizontalAlignment="Right"

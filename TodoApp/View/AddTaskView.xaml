@@ -9,7 +9,7 @@
         AllowsTransparency="True"
         WindowStyle="None"
         Background="Transparent"
-        Height="200"
+        Height="250"
         Width="300"
         WindowStartupLocation="CenterOwner">
 
@@ -34,16 +34,16 @@
                                 ShowMinimizeButton="False"
                                 Title="Neue Aufgabe hinzufügen"
                                 VerticalAlignment="Top"
-                                TitleForeground="LightGreen" 
+                                TitleForeground="LightGreen"
                                 CloseIconSource="/Assets/Icon/Icon-close.png"
-                                UseCloseIcon="True"/>
+                                UseCloseIcon="True" />
 
             <Grid Margin="10"
                   Grid.Row="1">
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
 
@@ -53,24 +53,44 @@
                     <TextBlock  Text="Aufgabe"
                                 Foreground="YellowGreen"
                                 HorizontalAlignment="Center" />
+
                     <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
                              Width="250" />
                 </StackPanel>
-                <StackPanel Grid.Row="1">
 
-                    <TextBlock Text="Beschreibung"
+                <StackPanel Grid.Row="1"
+                            Margin="0 10 0 0">
+
+                    <TextBlock Text="Fälligkeitsdatum"
                                Foreground="YellowGreen"
-                               Margin="0 10 0 0"
+                               Margin="0 0 0 0"
                                HorizontalAlignment="Center" />
+
+                    <DatePicker Width="250"
+                                SelectedDate="{Binding DueDate, UpdateSourceTrigger=PropertyChanged}" />
+
+                </StackPanel>
+                <DockPanel Grid.Row="2"
+                           Margin="0 10 0 10">
+
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Beschreibung"
+                               Foreground="YellowGreen"
+                               HorizontalAlignment="Center" />
+
                     <TextBox Width="250"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             MaxLines="4"
+                             DockPanel.Dock="Bottom"
+                             MaxLines="2"
                              Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-                             VerticalScrollBarVisibility="Auto" />
-                </StackPanel>
+                             VerticalScrollBarVisibility="Auto"
+                             VerticalAlignment="Stretch"
+                             HorizontalAlignment="Stretch" />
 
-                <Grid Grid.Row="3"
+                </DockPanel>
+
+                <Grid Grid.Row="4"
                       Margin="10 0 10 0"
                       HorizontalAlignment="Right"
                       VerticalAlignment="Center">

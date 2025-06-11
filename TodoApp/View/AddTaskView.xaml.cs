@@ -9,16 +9,10 @@ namespace TodoApp.View
     /// </summary>
     public partial class AddTaskView : Window
     {
-        //public AddTaskView() { }
-
+      
         public AddTaskView()
         {
             InitializeComponent();
-            var vm = new AddTaskViewModel();
-
-            vm.RequestClose += () => this.Close();
-            DataContext = vm;
-
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

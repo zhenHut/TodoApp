@@ -12,7 +12,9 @@
     <None Remove="Assets\Icon\floppy-disk.png" />
     <None Remove="Assets\Icon\Icon-ADD2.png" />
     <None Remove="Assets\Icon\Icon-addTask.png" />
+    <None Remove="Assets\Icon\Icon-bearbeiten.png" />
     <None Remove="Assets\Icon\Icon-close.png" />
+    <None Remove="Assets\Icon\Icon-edit.png" />
     <None Remove="Assets\Icon\Icon-History.png" />
     <None Remove="Assets\Icon\Icon-Home.png" />
     <None Remove="Assets\Icon\Icon-reload.png" />
@@ -36,7 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Icon\Icon-bearbeiten.png" />
     <Resource Include="Assets\Icon\Icon-close.png" />
+    <Resource Include="Assets\Icon\Icon-edit.png" />
     <Resource Include="Assets\Icon\Icon-History.png" />
     <Resource Include="Assets\Icon\Icon-Home.png" />
   </ItemGroup>

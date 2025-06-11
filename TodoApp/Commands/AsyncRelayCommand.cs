@@ -60,7 +60,7 @@ namespace TodoApp.Commands
 
         public void RaiseCanExecuteChanged()
         {
-            CommandManager.InvalidateRequerySuggested();
+           CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

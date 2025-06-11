@@ -18,11 +18,12 @@ namespace TodoApp.ViewModel
     public class TasksViewModel : BaseViewModel
     {
         #region Constructor
-       
-        public TasksViewModel(IDialogService dialogService, INotificationService notificationService)
+
+        public TasksViewModel()
         {
-            _dialogService = dialogService;
-            _notificationService = notificationService;
+            _dialogService = ServiceLocator.GET<IDialogService>();
+            _notificationService = ServiceLocator.GET<INotificationService>();
+            _historyLogService = ServiceLocator.GET<IHistoryLogService>();
 
             _ = LoadTaskAsync_Execute();
 
@@ -30,39 +31,22 @@ namespace TodoApp.ViewModel
             OpenAddTaskCommand = new RelayCommand(OpenAddTaskWindow_Execute);
             SaveTaskCommand = new AsyncRelayCommand(SaveTasksAsync_Execute);
             LoadTaskCommand = new AsyncRelayCommand(LoadTaskAsync_Execute);
-
-            //_notificationService.Show("Laden erfolgreich bitch", MessagePanelType.Warning);
-
-            Tasks.Add(new TaskItem { Title = "skdasdas" });
-            Tasks.Add(new TaskItem { Title = "sdasgdg" });
-            Tasks.Add(new TaskItem { Title = "sdasg" });
-            Tasks.Add(new TaskItem { Title = "sdasggddg" });
-            Tasks.Add(new TaskItem { Title = "sdasjdg" });
-            Tasks.Add(new TaskItem { Title = "sdaqsgdg" });
-            Tasks.Add(new TaskItem { Title = "sdasxgdg" });
-            Tasks.Add(new TaskItem { Title = "sdkasgdg" });
-            Tasks.Add(new TaskItem { Title = "sdaysgdg" });
-            Tasks.Add(new TaskItem { Title = "sdasbgdg" });
-            Tasks.Add(new TaskItem { Title = "sdaösgdg" });
-            Tasks.Add(new TaskItem { Title = "sdasgdsg" });
-            Tasks.Add(new TaskItem { Title = "sdnasgdg" });
-            Tasks.Add(new TaskItem { Title = "sdaäsgdg" }
-
-
-            );
+            UpdateTaskCommand = new RelayCommand(UpdateTask_Execute, UpdateTask_CanExecute);
         }
-
 
         #endregion
 
         #region Fields
 
-        private IDialogService _dialogService;
-        private INotificationService _notificationService;
+        private readonly IDialogService _dialogService;
+        private readonly INotificationService _notificationService;
+        private readonly IHistoryLogService _historyLogService;
 
         private readonly string _storagePath = Path.Combine
             (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TodoApp", "tasks.json");
 
+
+        private TaskItem _selectedTaskItem;
         private bool _isTaskLoaded;
         #endregion
 
@@ -70,16 +54,32 @@ namespace TodoApp.ViewModel
 
         public ObservableCollection<TaskItem> Tasks { get; } = new();
 
+
+
         public ICommand DeleteTaskCommand { get; }
         public ICommand OpenAddTaskCommand { get; }
         public ICommand SaveTaskCommand { get; }
-
         public ICommand LoadTaskCommand { get; }
+        public ICommand UpdateTaskCommand { get; }
+
+
+        public TaskItem SelectedTaskItem
+        {
+            get => _selectedTaskItem;
+            set { 
+                if(SetProperty(ref _selectedTaskItem, value))
+                {
+                    // Überprüft alle CanExecute Zustände
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
+        }
+
 
         public bool IsTaskloaded
         {
             get => _isTaskLoaded;
-            set =>SetProperty(ref _isTaskLoaded, value);
+            set => SetProperty(ref _isTaskLoaded, value);
         }
         #endregion
 
@@ -87,16 +87,21 @@ namespace TodoApp.ViewModel
 
         private void OpenAddTaskWindow_Execute()
         {
-            _dialogService.ShowDialog<AddTaskView, AddTaskViewModel>(vm =>
-            {
-                vm.Init(this, _notificationService);
-            });
+            OpenTaskWindow();
         }
 
+        private void OpenTaskWindow(TaskItem? taskItem = null, bool isUpdated = false)
+        {
+            _dialogService.ShowDialog<AddTaskView, AddTaskViewModel>(vm =>
+            {
+                vm.Init(this, taskItem, isUpdated);
+            });
+        }
 
         public void AddTask(TaskItem taskItem)
         {
             Tasks.Add(taskItem);
+            _historyLogService.Created($"Neue Aufgabe '{taskItem.Title}' erstellt.");
         }
 
         private bool DeleteTask_CanExecute(TaskItem taskItem)
@@ -107,6 +112,7 @@ namespace TodoApp.ViewModel
         private void DeleteTask_Execute(TaskItem taskItem)
         {
             Tasks.Remove(taskItem);
+            _historyLogService.Deleted($"Aufgabe '{taskItem.Title}' gelöscht.");
         }
 
         public async Task SaveTasksAsync_Execute()
@@ -161,12 +167,28 @@ namespace TodoApp.ViewModel
             catch (Exception ex)
             {
                 _notificationService.Show($"Fehler beim Laden: {ex.Message}", MessagePanelType.Error);
-                //MessageBox.Show($"Fehler beim Laden: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        private bool UpdateTask_CanExecute()
+        {
+
+            return _selectedTaskItem != null;
+        }
+
+        private void UpdateTask_Execute()
+        {
+
+            OpenTaskWindow(SelectedTaskItem, true);
 
 
+        }
+
+
+        //private void UpdateTask(TaskItem taskItem)
+        //{
+        //    Tasks.
+        //}
         #endregion
     }
 }

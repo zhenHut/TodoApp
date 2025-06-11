@@ -43,7 +43,7 @@ namespace TodoApp.Model
             }
         }
 
-        public DateTime? DueTime
+        public DateTime? DueDate
         {
             get => _dueDate;
             set
@@ -53,7 +53,7 @@ namespace TodoApp.Model
             }
         }
 
-        public bool IsOverDue => DueTime.HasValue && DueTime.Value.Date < DateTime.Today;
+        public bool IsOverDue => DueDate.HasValue && DueDate.Value.Date < DateTime.Today;
         
          
         #endregion

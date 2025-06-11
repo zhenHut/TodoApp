@@ -8,7 +8,7 @@
              Background="{StaticResource PageBackgroundGradient}"
              d:DesignHeight="450" d:DesignWidth="800">
     
-    <Grid Margin="10 5">
+    <Grid Margin="10 15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -29,14 +29,19 @@
                    FontWeight="Bold"
                    Foreground="YellowGreen"
                    Margin="0 0 0 10" />
-        
 
         <ListBox Grid.Row="1"
                  Background="Transparent"
-                 HorizontalAlignment="Stretch">
-            
-            
-        </ListBox>
-            
+                 HorizontalAlignment="Stretch"
+                 ItemsSource="{Binding LogEntries}" 
+                 FontFamily="Consolas"
+                 FontSize="15"
+                 Foreground="LightGoldenrodYellow"/>
+
+
+
+
+
+
     </Grid>
 </UserControl>

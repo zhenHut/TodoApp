@@ -2,6 +2,7 @@
 using TodoApp.Infrastructure;
 using TodoApp.Interfaces;
 using TodoApp.Model;
+using TodoApp.Services;
 
 namespace TodoApp.ViewModel
 {
@@ -9,9 +10,9 @@ namespace TodoApp.ViewModel
     {
         #region Constructor
 
-        public HomeViewModel(ITaskService taskService) 
+        public HomeViewModel() 
         {
-            _taskService = taskService;
+            _taskService = ServiceLocator.GET<ITaskService>();
             LoadOpenTasks();
         }
         #endregion
@@ -32,7 +33,7 @@ namespace TodoApp.ViewModel
         {
             var tasks = _taskService.LoadAllTasks();
             var openTasks = tasks.Where(t => !t.IsCompleted)
-                .OrderBy(t => t.DueTime ?? DateTime.MaxValue);
+                .OrderBy(t => t.DueDate ?? DateTime.MaxValue);
 
             foreach (var task in openTasks)
                 OpenTasks.Add(task);

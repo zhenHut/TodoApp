@@ -18,9 +18,6 @@ namespace TodoApp.View
         public MainWindow()
         {
             InitializeComponent();
-            
-           
-            
         }
 
         #endregion
