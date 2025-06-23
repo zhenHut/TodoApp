@@ -23,6 +23,7 @@ namespace TodoApp.ViewModel
         #endregion
 
         #region Fields
+
         private string _dialogTitle = "Aufgabe hinzufügen";
         private string _dialogButtonName = "Hinzufügen";
         private string _title = string.Empty;
