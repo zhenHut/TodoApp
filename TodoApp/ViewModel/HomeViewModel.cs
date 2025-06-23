@@ -1,4 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows.Data;
 using TodoApp.Infrastructure;
 using TodoApp.Interfaces;
 using TodoApp.Model;
@@ -10,11 +13,15 @@ namespace TodoApp.ViewModel
     {
         #region Constructor
 
-        public HomeViewModel() 
+        public HomeViewModel()
         {
             _taskService = ServiceLocator.GET<ITaskService>();
+            OpenTasksView = CollectionViewSource.GetDefaultView(_taskService.Tasks);
+
             LoadOpenTasks();
         }
+
+     
         #endregion
 
         #region Fields
@@ -24,21 +31,45 @@ namespace TodoApp.ViewModel
         #endregion
 
         #region Properties
-        public ObservableCollection<TaskItem> OpenTasks { get; } = new();
+        
+        public ICollectionView OpenTasksView { get; init; }
         #endregion
 
         #region Methods
 
-        private void LoadOpenTasks() 
+
+        public void LoadOpenTasks()
         {
-            var tasks = _taskService.LoadAllTasks();
-            var openTasks = tasks.Where(t => !t.IsCompleted)
-                .OrderBy(t => t.DueDate ?? DateTime.MaxValue);
+            
+            foreach (var task in _taskService.Tasks)
+            {
+                task.PropertyChanged += Task_PropertyChanged;
+            }
 
-            foreach (var task in openTasks)
-                OpenTasks.Add(task);
+            _taskService.Tasks.CollectionChanged += (s, e) =>
+            {
+                if (e.NewItems != null)
+                {
+                    foreach (TaskItem newTask in e.NewItems)
+                        newTask.PropertyChanged += Task_PropertyChanged;
+                }
+
+                if (e.OldItems != null)
+                {
+                    foreach (TaskItem oldTask in e.OldItems)
+                        oldTask.PropertyChanged -= Task_PropertyChanged;
+                }
+
+                OpenTasksView.Refresh();
+            };
         }
-
+        private void Task_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TaskItem.IsCompleted))
+            {
+                OpenTasksView?.Refresh();
+            }
+        }
         #endregion
     }
 }

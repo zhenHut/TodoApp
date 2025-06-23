@@ -17,12 +17,14 @@ namespace TodoApp.ViewModel
             _notificationService = ServiceLocator.GET<INotificationService>();
             ConfirmCommand = new RelayCommand(Confirm_Execute, Confirm_CanExecute);
             CancelCommand = new RelayCommand(Cancel_Execute);
+           
         }
 
         #endregion
 
         #region Fields
-
+        private string _dialogTitle = "Aufgabe hinzufügen";
+        private string _dialogButtonName = "Hinzufügen";
         private string _title = string.Empty;
         private string _description = string.Empty;
         private DateTime? _dueDate;
@@ -34,6 +36,18 @@ namespace TodoApp.ViewModel
         #endregion
 
         #region Properties
+
+        public string DialogTitle
+        {
+            get => _dialogTitle;
+            set => SetProperty(ref _dialogTitle, value);
+        }
+
+        public string DialogButtonName
+        {
+            get => _dialogButtonName;
+            set => SetProperty(ref _dialogButtonName, value);
+        }
 
         public string Title
         {
@@ -73,54 +87,57 @@ namespace TodoApp.ViewModel
 
         #region Methods
 
-        public void Init(TasksViewModel? TasksViewModel , TaskItem? taskItem, bool isTaskUpdated = false)
+        public void Init(TasksViewModel? TasksViewModel, TaskItem? taskItem = null, bool isTaskUpdated = false)
         {
             _tasksViewModel = TasksViewModel;
-            
+
             _isTaskUpdated = isTaskUpdated;
 
-            if (IsTaskUpdated && _task != null)
+            if (IsTaskUpdated && taskItem != null)
             {
+                _dialogTitle = "Aufgabe bearbeiten";
+                _dialogButtonName =  "Speichern";
                 _task = taskItem;
                 _title = taskItem?.Title ?? string.Empty;
                 _description = taskItem?.Description ?? string.Empty;
                 _dueDate = taskItem?.DueDate;
             }
-           
+
         }
 
         private bool Confirm_CanExecute()
         {
-            return !string.IsNullOrWhiteSpace(_task?.Title);
+            return !string.IsNullOrWhiteSpace(_title); 
         }
 
         private void Confirm_Execute()
         {
-            if (!_isTaskUpdated && _task != null)
+            if (_isTaskUpdated && _task != null)
             {
                 _task.Title = _title;
                 _task.Description = _description;
                 _task.DueDate = _dueDate;
-            }else
-            { 
+            }
+            else
+            {
                 var newTask = new TaskItem
                 {
                     Title = Title,
                     Description = Description,
                     DueDate = DueDate,
                 };
-                
 
-                if (_tasksViewModel?.Tasks.Any(t => t.Title.Equals(newTask?.Title, StringComparison.OrdinalIgnoreCase)) ?? false)
+
+                if (_tasksViewModel?.Tasks.Any(t => t.Title.Trim().Equals(newTask?.Title, StringComparison.OrdinalIgnoreCase)) ?? false)
                 {
                     _notificationService?.Show("Aufgabe existiert bereits.", MessagePanelType.Error);
                     return;
                 }
 
-                _tasksViewModel?.AddTask(newTask?? new TaskItem()) ;
+                _tasksViewModel?.AddTask(newTask);
             }
-            
-                RequestClose?.Invoke();
+
+            RequestClose?.Invoke();
         }
 
         private void Cancel_Execute()

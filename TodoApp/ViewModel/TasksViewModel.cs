@@ -1,9 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Runtime.Intrinsics.X86;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using TodoApp.Commands;
 using TodoApp.Helper;
@@ -24,6 +20,7 @@ namespace TodoApp.ViewModel
             _dialogService = ServiceLocator.GET<IDialogService>();
             _notificationService = ServiceLocator.GET<INotificationService>();
             _historyLogService = ServiceLocator.GET<IHistoryLogService>();
+            _taskService = ServiceLocator.GET<ITaskService>();
 
             _ = LoadTaskAsync_Execute();
 
@@ -41,20 +38,16 @@ namespace TodoApp.ViewModel
         private readonly IDialogService _dialogService;
         private readonly INotificationService _notificationService;
         private readonly IHistoryLogService _historyLogService;
+        private readonly ITaskService _taskService;
 
-        private readonly string _storagePath = Path.Combine
-            (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TodoApp", "tasks.json");
+        private string _dialogTitle;
+        private string _dialogButtonName;
+        public ObservableCollection<TaskItem> Tasks => _taskService.Tasks;
 
-
-        private TaskItem _selectedTaskItem;
-        private bool _isTaskLoaded;
+        private TaskItem? _selectedTaskItem;
         #endregion
 
         #region  Properties
-
-        public ObservableCollection<TaskItem> Tasks { get; } = new();
-
-
 
         public ICommand DeleteTaskCommand { get; }
         public ICommand OpenAddTaskCommand { get; }
@@ -63,11 +56,12 @@ namespace TodoApp.ViewModel
         public ICommand UpdateTaskCommand { get; }
 
 
-        public TaskItem SelectedTaskItem
+        public TaskItem? SelectedTaskItem
         {
             get => _selectedTaskItem;
-            set { 
-                if(SetProperty(ref _selectedTaskItem, value))
+            set
+            {
+                if (SetProperty(ref _selectedTaskItem, value))
                 {
                     // Überprüft alle CanExecute Zustände
                     CommandManager.InvalidateRequerySuggested();
@@ -76,11 +70,6 @@ namespace TodoApp.ViewModel
         }
 
 
-        public bool IsTaskloaded
-        {
-            get => _isTaskLoaded;
-            set => SetProperty(ref _isTaskLoaded, value);
-        }
         #endregion
 
         #region Methods
@@ -96,11 +85,12 @@ namespace TodoApp.ViewModel
             {
                 vm.Init(this, taskItem, isUpdated);
             });
+
         }
 
         public void AddTask(TaskItem taskItem)
         {
-            Tasks.Add(taskItem);
+            _taskService.AddTask(taskItem);
             _historyLogService.Created($"Neue Aufgabe '{taskItem.Title}' erstellt.");
         }
 
@@ -111,7 +101,7 @@ namespace TodoApp.ViewModel
 
         private void DeleteTask_Execute(TaskItem taskItem)
         {
-            Tasks.Remove(taskItem);
+            _taskService.DeleteTask(taskItem);
             _historyLogService.Deleted($"Aufgabe '{taskItem.Title}' gelöscht.");
         }
 
@@ -119,15 +109,9 @@ namespace TodoApp.ViewModel
         {
             try
             {
-                var directory = Path.GetDirectoryName(_storagePath);
-
-                if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
-                    Directory.CreateDirectory(directory);
-
                 if (Tasks != null && Tasks.Count != 0)
                 {
-                    var json = JsonSerializer.Serialize(Tasks);
-                    await File.WriteAllTextAsync(_storagePath, json);
+                    await _taskService.SaveTaskAsync();
 
                     _notificationService.Show("Aufgaben gespeichert", MessagePanelType.Success);
                 }
@@ -149,18 +133,7 @@ namespace TodoApp.ViewModel
         {
             try
             {
-                if (!File.Exists(_storagePath))
-                    return;
-
-                var json = await File.ReadAllTextAsync(_storagePath);
-                var loaded = JsonSerializer.Deserialize<List<TaskItem>>(json);
-
-                if (loaded != null)
-                {
-                    Tasks.Clear();
-                    foreach (var item in loaded)
-                        Tasks.Add(item);
-                }
+                await _taskService.LoadTasksAsync();
 
                 _notificationService.Show("Aufgaben geladen", MessagePanelType.Success);
             }
@@ -178,17 +151,8 @@ namespace TodoApp.ViewModel
 
         private void UpdateTask_Execute()
         {
-
             OpenTaskWindow(SelectedTaskItem, true);
-
-
         }
-
-
-        //private void UpdateTask(TaskItem taskItem)
-        //{
-        //    Tasks.
-        //}
         #endregion
     }
 }

@@ -32,7 +32,7 @@
                                 CloseButtonCommand="{Binding CancelCommand}"
                                 ShowMaximizeButton="False"
                                 ShowMinimizeButton="False"
-                                Title="Neue Aufgabe hinzufügen"
+                                Title="{Binding DialogTitle, UpdateSourceTrigger=PropertyChanged}"
                                 VerticalAlignment="Top"
                                 TitleForeground="LightGreen"
                                 CloseIconSource="/Assets/Icon/Icon-close.png"
@@ -106,7 +106,7 @@
                             Background="#FF115F36"
                             BorderThickness="0">
 
-                        <Button Content="Hinzufügen"
+                        <Button Content="{Binding DialogButtonName}"
                                 Width="100"
                                 Background="Transparent"
                                 Command="{Binding ConfirmCommand}"

@@ -24,7 +24,7 @@
         <StackPanel Grid.Row="1"
                     Margin="0 10 0 0">
 
-            <ItemsControl ItemsSource="{Binding OpenTasks}">
+            <ItemsControl ItemsSource="{Binding OpenTasksView}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Margin="0,0,0,8"
@@ -39,7 +39,7 @@
                                            Foreground="LightGoldenrodYellow" />
                                 <!--<TextBlock Text="{Binding DueDate, StringFormat='Fällig bis: {0:dd.MM.yyyy}'}"
                                            Foreground="DarkGray" />-->
-                                <TextBlock>
+                                <TextBlock Foreground="DarkGoldenrod">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Text"

@@ -1,10 +1,13 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using TodoApp.Commands;
 using TodoApp.Enums;
 using TodoApp.Infrastructure;
 using TodoApp.Interfaces;
+using TodoApp.Model;
 using TodoApp.Services;
 
 namespace TodoApp.ViewModel
@@ -87,16 +90,33 @@ namespace TodoApp.ViewModel
         {
             return new ObservableCollection<MenuItemViewModel>()
             {
-                new MenuItemViewModel() { Title= "StartMenü", Icon="/Assets/Icon/Icon-Home.png", PageKey=AppPageKey.Home},
-                new MenuItemViewModel() { Title = "Aufgaben", Icon="/Assets/Icon/Icon-Tasks.png", PageKey=AppPageKey.Tasks},
-                new MenuItemViewModel() { Title="Einstellungen", Icon="/Assets/Icon/Icon-settings.png", PageKey= AppPageKey.Settings },
-                new MenuItemViewModel() { Title="Historie", Icon = "/Assets/Icon/Icon-History.png", PageKey = AppPageKey.History},
+                new MenuItemViewModel() { Title = "StartMenü", Icon ="/Assets/Icon/Icon-Home.png", PageKey=AppPageKey.Home},
+                new MenuItemViewModel() { Title = "Aufgaben", Icon ="/Assets/Icon/Icon-Tasks.png", PageKey=AppPageKey.Tasks},
+                new MenuItemViewModel() { Title = "Einstellungen", Icon ="/Assets/Icon/Icon-settings.png", PageKey= AppPageKey.Settings },
+                new MenuItemViewModel() { Title = "Historie", Icon = "/Assets/Icon/Icon-History.png", PageKey = AppPageKey.History},
             };
         }
 
         private void OnPageChanged(object? sender, BaseViewModel baseViewModel)
         {
             CurrentPage = baseViewModel;
+
+            var taskService = ServiceLocator.GET<ITaskService>();
+            var viewCollection = CollectionViewSource.GetDefaultView(taskService.Tasks);
+
+            if (CurrentPage is HomeViewModel homeViewModel)
+            {
+                viewCollection.Filter = item => item is TaskItem t && !t.IsCompleted;
+                viewCollection.SortDescriptions.Add(new SortDescription(nameof(TaskItem.DueDate), ListSortDirection.Ascending));
+            }
+            else
+            {
+                viewCollection.Filter = null;
+                viewCollection.SortDescriptions.Clear();
+            }
+
+
+            viewCollection.Refresh();
         }
         #endregion
     }
